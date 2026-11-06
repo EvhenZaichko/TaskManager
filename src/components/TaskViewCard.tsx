@@ -48,10 +48,15 @@ const TaskViewCard = () => {
 
     const hasChanges = Object.keys(changes).length > 0
 
-    const handleApply = () => {
-        dispatch(updateTask({ id: task.id, changes }))
-        setIsEditTitle(false)
-        setIsEditDescription(false)
+    const handleApply = async () => {
+        try {
+            await dispatch(updateTask({ id: task.id, changes })).unwrap()
+            setIsEditTitle(false)
+            setIsEditDescription(false)
+            dispatch(showToast({ message: 'Task updated', type: 'success' }))
+        } catch {
+            dispatch(showToast({ message: 'Failed to update', type: 'error' }))
+        }
     }
 
     const handleCancel = () => {

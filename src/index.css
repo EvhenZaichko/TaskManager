@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+/* Цвета проекта: bg-app, bg-surface, text-fg, text-muted, bg-accent и т.д. */
+@theme {
+  --color-app: #0b0b0f;          /* фон страницы */
+  --color-surface: #141419;      /* хедер, сайдбар, карточки */
+  --color-surface-hover: #1c1c23;
+  --color-surface-active: #24242d;
+  --color-line: #26262f;         /* границы */
+
+  --color-fg: #e7e7ec;           /* основной текст */
+  --color-muted: #8b8b98;        /* второстепенный текст */
+
+  --color-accent: #7c6cf0;
+  --color-accent-hover: #8f81f5;
+  --color-accent-soft: rgb(124 108 240 / 0.15);
+
+  --color-danger: #f0616d;
+}
+
+@layer base {
+  body {
+    @apply bg-app text-fg antialiased;
+  }
+}

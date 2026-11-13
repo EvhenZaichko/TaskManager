@@ -4,6 +4,7 @@ import tasksReducer from './tasksSlice'
 import modalReducer from './modalSlice'
 import toastReducer from './toastSlice'
 import projectReducer from './projectSlice'
+import authReducer from './authSlice'
 
 export const store = configureStore({
     reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
             modal: modalReducer,
             toast: toastReducer,
             projects: projectReducer,
+            auth: authReducer,
     }
 })
 

@@ -1,56 +1,90 @@
-import React from 'react';
-import { useNavigate} from 'react-router-dom'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router'
+import { useAppDispatch, useAppSelector } from '../store'
+import { registration } from '../store/authSlice'
+import type { RegistrationBody } from '../types/userTypes.ts'
+import {showToast} from "../store/toastSlice.ts";
 
 const Registration = () => {
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
+    const dispatch = useAppDispatch()
+    const navigate = useNavigate()
+    const { loading, error } = useAppSelector((state) => state.auth)
+
+    const [form, setForm] = useState<RegistrationBody>({
+        email: '',
+        password: '',
+        username: '',
+    })
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
     }
 
-    const navigate = useNavigate()
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        try {
+            await dispatch(registration(form)).unwrap()
+            navigate('/projects')
+        } catch {
+            dispatch(showToast({ message: '', type: 'error' }))
+        }
+    }
 
     return (
-        <div className=" flex justify-center items-center min-h-screen">
-            <form onSubmit={handleSubmit} className="flex flex-col items-center w-85 h-100 gap-10 bg-gray-950 border-gray-600 border-1 rounded-3xl">
-                <h1 className="font-bold text-2xl pt-7">Registration</h1>
-                <label className="flex flex-col gap-1 text-sm text-muted">
-                    <input
-                        type="email"
-                        name="email"
-                        required
-                        className="rounded-lg border border-line bg-app px-3 py-2 text-fg outline-none focus:border-accent"
-                        placeholder="Email"
-                    />
-                </label>
+        <div className="flex min-h-screen items-center justify-center px-4">
+            <form
+                onSubmit={handleSubmit}
+                className="flex w-full max-w-sm flex-col gap-4 rounded-2xl border border-line bg-surface p-8"
+            >
+                <h1 className="mb-2 text-center text-2xl font-bold">Registration</h1>
 
-                <label className="flex flex-col gap-1 text-sm text-muted">
-                    <input
-                        type="username"
-                        name="username"
-                        required
-                        className="rounded-lg border border-line bg-app px-3 py-2 text-fg outline-none focus:border-accent"
-                        placeholder="Username"
-                    />
-                </label>
-                <label className="flex flex-col gap-1 text-sm text-muted">
-                    <input
-                        type="password"
-                        name="password"
-                        required
-                        className="rounded-lg border border-line bg-app px-3 py-2 text-fg outline-none focus:border-accent"
-                        placeholder="Password"
-                    />
-                </label>
-                <div className="flex flex-col gap-1">
-                    <button type="submit" className="rounded-lg  font-semibold text-white cursor-pointer ">
-                        Sign up
-                    </button>
-                    <button  className="rounded-lg  px-2 font-semibold text-gray-500 cursor-pointer " onClick={() => navigate('/')}>
-                        Already have an account
-                    </button>
-                </div>
+                <input
+                    type="text"
+                    name="username"
+                    value={form.username}
+                    onChange={handleChange}
+                    required
+                    placeholder="Username"
+                    className="rounded-lg border border-line bg-app px-3 py-2 text-fg outline-none focus:border-accent"
+                />
+
+                <input
+                    type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    required
+                    placeholder="Email"
+                    className="rounded-lg border border-line bg-app px-3 py-2 text-fg outline-none focus:border-accent"
+                />
+
+                <input
+                    type="password"
+                    name="password"
+                    value={form.password}
+                    onChange={handleChange}
+                    required
+                    minLength={6}
+                    placeholder="Password"
+                    className="rounded-lg border border-line bg-app px-3 py-2 text-fg outline-none focus:border-accent"
+                />
+
+                {error && <p className="text-sm text-danger">{error}</p>}
+
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className="mt-2 rounded-lg bg-accent py-2 font-semibold text-white transition-colors hover:bg-accent-hover disabled:opacity-50"
+                >
+                    {loading ? 'Creating account...' : 'Sign up'}
+                </button>
+
+                <Link to="/login" className="text-center text-sm text-muted hover:text-fg">
+                    Already have an account?
+                </Link>
             </form>
         </div>
-    );
-};
+    )
+}
 
-export default Registration;
+export default Registration

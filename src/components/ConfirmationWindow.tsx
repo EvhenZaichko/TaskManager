@@ -5,7 +5,6 @@ import {useAppDispatch} from "../store";
 
 import { TriangleAlert, Trash2 } from 'lucide-react'
 import {closeModal} from "../store/modalSlice.ts";
-import toast from "../UI/Toast.tsx";
 import {showToast} from "../store/toastSlice.ts";
 
 
@@ -30,7 +29,7 @@ const ConfirmationWindow = () => {
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                    <h2 className="text-lg font-semibold">Delete project?</h2>
+                    <h2 className="text-lg font-semibold">Delete project ?</h2>
                     <p className="text-sm leading-relaxed text-muted">
                         The project and <span className="font-medium text-fg">all its tasks</span> will be deleted.
                         This action cannot be undone.
@@ -41,14 +40,14 @@ const ConfirmationWindow = () => {
             <div className="flex justify-end gap-2 border-t border-line pt-4">
                 <button
                     type="button"
-                    className="rounded-lg px-4 py-2 text-sm font-medium text-muted transition-colors hover:bg-surface-hover hover:text-fg"
+                    className="rounded-lg px-4 py-2 text-sm font-medium text-muted cursor-pointer transition-colors hover:bg-surface-hover hover:text-fg"
                     onClick={() => dispatch(closeModal())}
                 >
                     Cancel
                 </button>
                 <button
                     type="button"
-                    className="flex items-center gap-2 rounded-lg bg-danger px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-danger/85"
+                    className="flex items-center gap-2 rounded-lg bg-danger px-4 py-2 text-sm font-semibold text-white cursor-pointer transition-colors hover:bg-danger/85"
                     onClick={removeHandler}
                 >
                     <Trash2 size={16} />

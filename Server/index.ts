@@ -5,6 +5,7 @@ import mongoose from 'mongoose'
 import usersRouter from './routes/usersRoute.js'
 import tasksRouter from './routes/tasksRoute.js'
 import projectRouter from "./routes/projectRoute.js";
+import {authMiddleware} from "./middleware/authMiddleware.js";
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -19,8 +20,8 @@ app.use(cors({ origin: process.env.CLIENT_URL }))
 app.use(express.json())
 
 app.use('/api/users', usersRouter)
-app.use('/api/tasks', tasksRouter)
-app.use('/api/projects', projectRouter)
+app.use('/api/tasks', authMiddleware, tasksRouter)
+app.use('/api/projects', authMiddleware, projectRouter)
 
 mongoose
     .connect(MONGO_URI)

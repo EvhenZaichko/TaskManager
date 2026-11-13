@@ -4,8 +4,6 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import * as projectApi from '../api/projectApi.ts'
 
 
-
-
 export const createProject = createAsyncThunk(
     'projects/createProject',
     async(body: CreateProjectBody) => {

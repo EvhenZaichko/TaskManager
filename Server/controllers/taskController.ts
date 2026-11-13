@@ -93,6 +93,7 @@ class TaskController {
 
     async updateTask(req: Request<TaskId, unknown, UpdateTaskBody>, res: Response) {
         const { id } = req.params
+
         const { title, description, priority, status } = req.body
 
         if(!mongoose.isValidObjectId(id)) {

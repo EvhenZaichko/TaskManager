@@ -22,7 +22,7 @@ const Board = () => {
 
         const id = e.dataTransfer.getData('taskId')
         const task = tasks.find((t) => t.id === id)
-        if (!task || task.status === status) return      // бросили в ту же колонку
+        if (!task || task.status === status) return
 
         dispatch(updateTask({ id, changes: { status } }))
     }

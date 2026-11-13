@@ -1,46 +1,77 @@
-import { useNavigate} from 'react-router-dom'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router'
+import { useAppDispatch, useAppSelector } from '../store'
+import { login } from '../store/authSlice'
+import type { LoginBody } from '../types/userTypes.ts'
+import { showToast } from '../store/toastSlice.ts'
 
 const Login = () => {
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
+    const dispatch = useAppDispatch()
+    const navigate = useNavigate()
+    const loading = useAppSelector((state) => state.auth.loading)
+
+    const [form, setForm] = useState<LoginBody>({
+        email: '',
+        password: '',
+    })
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
     }
 
-    const navigate = useNavigate()
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        try {
+            await dispatch(login(form)).unwrap()
+            navigate('/projects')
+            dispatch(showToast({ message: 'Successful Login!' }))
+        } catch {
+            dispatch(showToast({ message: 'Wrong email or password', type: 'error' }))
+        }
+    }
 
     return (
-        <div className=" flex justify-center items-center min-h-screen">
-            <form onSubmit={handleSubmit} className="flex flex-col items-center w-85 h-100 gap-10 bg-gray-950 border-gray-600 border-1 rounded-3xl">
-                <h1 className="font-bold text-2xl pt-7">Login</h1>
-                <label className="flex flex-col gap-1 text-sm text-muted">
-                    <input
-                        type="email"
-                        name="email"
-                        required
-                        className="rounded-lg border border-line bg-app px-3 py-2 text-fg outline-none focus:border-accent"
-                        placeholder="Email"
-                    />
-                </label>
+        <div className="flex min-h-screen items-center justify-center px-4">
+            <form
+                onSubmit={handleSubmit}
+                className="flex w-full max-w-sm flex-col gap-4 rounded-2xl border border-line bg-surface p-8"
+            >
+                <h1 className="mb-2 text-center text-2xl font-bold">Login</h1>
 
-                <label className="flex flex-col gap-1 text-sm text-muted">
-                    <input
-                        type="password"
-                        name="password"
-                        required
-                        className="rounded-lg border border-line bg-app px-3 py-2 text-fg outline-none focus:border-accent"
-                        placeholder="Password"
-                    />
-                </label>
-                <div className="flex flex-col gap-1">
-                    <button type="submit" className="rounded-lg mt-10 font-semibold text-white cursor-pointer ">
-                        Sign in
-                    </button>
-                    <button  className="rounded-lg  px-2 mt-2 font-semibold text-gray-500 cursor-pointer " onClick={() => navigate('/Register')}>
-                        Dont have an account yet
-                    </button>
-                </div>
+                <input
+                    type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    required
+                    placeholder="Email"
+                    className="rounded-lg border border-line bg-app px-3 py-2 text-fg outline-none focus:border-accent"
+                />
+
+                <input
+                    type="password"
+                    name="password"
+                    value={form.password}
+                    onChange={handleChange}
+                    required
+                    placeholder="Password"
+                    className="rounded-lg border border-line bg-app px-3 py-2 text-fg outline-none focus:border-accent"
+                />
+
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className="mt-2 rounded-lg bg-accent py-2 font-semibold text-white transition-colors hover:bg-accent-hover disabled:opacity-50"
+                >
+                    {loading ? 'Signing in...' : 'Sign in'}
+                </button>
+
+                <Link to="/register" className="text-center text-sm text-muted hover:text-fg">
+                    Don't have an account yet?
+                </Link>
             </form>
         </div>
-    );
-};
+    )
+}
 
-export default Login;
+export default Login
